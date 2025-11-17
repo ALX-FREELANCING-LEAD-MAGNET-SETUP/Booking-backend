@@ -1,30 +1,25 @@
-import express from 'express';
-import nodemailer from 'nodemailer';
-import bodyParser from 'body-parser';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import generatePDF from './generate-pdf.js';
-import cors from 'cors';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import nodemailer from "nodemailer";
+import generatePDF from "./generate-pdf.js";
 
 const app = express();
-const PORT = 3000;
-app.use(cors());
+const PORT = process.env.PORT || 3000;
 
 // Middleware
+app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static('public'));
 
 // POST endpoint
-app.post('/submit', async (req, res) => {
+app.post("/submit", async (req, res) => {
   const { name, email } = req.body;
+
   try {
-    const pdfPath = generatePDF(name);
+    const pdfStream = generatePDF(name);
 
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
@@ -34,16 +29,25 @@ app.post('/submit', async (req, res) => {
     await transporter.sendMail({
       from: `"GlowBeauty" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: 'Your Free Guide is Here!',
-      text: `Hi ${name}, your guide is attached.`,
-      attachments: [{ filename: 'guide.pdf', path: pdfPath }]
+      subject: "Your Free GlowBeauty Guide",
+      text: `Hi ${name}, here is your downloadable guide.`,
+      attachments: [
+        {
+          filename: "guide.pdf",
+          content: pdfStream
+        }
+      ]
     });
 
-    res.status(200).json({ message: 'Email sent' });
+    res.status(200).json({ message: "Email sent successfully" });
+
   } catch (err) {
-    console.error('Error:', err);
-    res.status(500).json({ message: 'Error sending email' });
+    console.error("Email Send Error:", err);
+    res.status(500).json({ message: "Failed to send email" });
   }
 });
 
-app.listen(PORT, () => console.log(`Server running at ${PORT}`));
+// Start server
+app.listen(PORT, () =>
+  console.log(`Backend running on port ${PORT}`)
+);
