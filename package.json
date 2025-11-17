@@ -9,24 +9,18 @@
     "dev": "nodemon --env-file=.env .",
     "start": "node ."
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ALX-FREELANCING-LEAD-MAGNET-SETUP/Booking-backend.git"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ALX-FREELANCING-LEAD-MAGNET-SETUP/Booking-backend/issues"
-  },
-  "homepage": "https://github.com/ALX-FREELANCING-LEAD-MAGNET-SETUP/Booking-backend#readme",
   "dependencies": {
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "get-stream": "^9.0.1",
     "nodemailer": "^7.0.10",
-    "nodemon": "^3.1.11",
     "pdfkit": "^0.17.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
   }
 }
